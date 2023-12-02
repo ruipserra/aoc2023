@@ -1,7 +1,6 @@
 package main
 
 import (
-	"strings"
 	"testing"
 )
 
@@ -11,7 +10,7 @@ pqr3stu8vwx
 a1b2c3d4e5f
 treb7uchet`
 
-	got := part1(strings.NewReader(input))
+	got := part1(input)
 	want := 142
 
 	if got != want {
@@ -28,7 +27,7 @@ xtwone3four
 zoneight234
 7pqrstsixteen`
 
-	got := part2(strings.NewReader(input))
+	got := part2(input)
 	want := 281
 
 	if got != want {
