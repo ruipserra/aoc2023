@@ -18,3 +18,20 @@ treb7uchet`
 		t.Errorf("part1() = %v, want %v", got, want)
 	}
 }
+
+func TestPart2(t *testing.T) {
+	input := `two1nine
+eightwothree
+abcone2threexyz
+xtwone3four
+4nineeightseven2
+zoneight234
+7pqrstsixteen`
+
+	got := part2(strings.NewReader(input))
+	want := 281
+
+	if got != want {
+		t.Errorf("part2() = %v, want %v", got, want)
+	}
+}
