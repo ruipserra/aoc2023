@@ -14,6 +14,7 @@ var input string
 
 func main() {
 	fmt.Printf("Part 1: %v\n", part1(input))
+	fmt.Printf("Part 2: %v\n", part2(input))
 }
 
 func eachLine(input string, fn func(line string)) {
@@ -48,6 +49,18 @@ func (g game) isValid() bool {
 		}
 	}
 	return true
+}
+
+func (g game) power() int {
+	var maxRed, maxGreen, maxBlue int
+
+	for _, subset := range g.subsets {
+		maxRed = max(maxRed, subset.red)
+		maxBlue = max(maxBlue, subset.blue)
+		maxGreen = max(maxGreen, subset.green)
+	}
+
+	return maxRed * maxGreen * maxBlue
 }
 
 type subset struct {
@@ -136,4 +149,15 @@ func part1(input string) int {
 	})
 
 	return sum
+}
+
+func part2(input string) int {
+	power := 0
+
+	eachLine(input, func(line string) {
+		game := parseGame(line)
+		power += game.power()
+	})
+
+	return power
 }
