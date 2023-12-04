@@ -13,6 +13,7 @@ var input string
 
 func main() {
 	fmt.Printf("Part 1: %v\n", part1(input))
+	fmt.Printf("Part 2: %v\n", part2(input))
 }
 
 func part1(input string) int {
@@ -39,6 +40,28 @@ func part1(input string) int {
 				col += numberWidth
 			} else {
 				col++
+			}
+		}
+	}
+
+	return sum
+}
+
+func part2(input string) int {
+	const gearCount = 2
+
+	sum := 0
+
+	lines := strings.Split(input, "\n")
+	for row, line := range lines {
+		for col := 0; col < len(line); col++ {
+			if line[col] != '*' {
+				continue
+			}
+
+			adjacentNumbers := findAdjacentNumbers(lines, row, col)
+			if len(adjacentNumbers) == gearCount {
+				sum += adjacentNumbers[0] * adjacentNumbers[1]
 			}
 		}
 	}
@@ -83,4 +106,47 @@ func isSymbolAdjacent(lines []string, row int, col int, digitCount int) bool {
 	}
 
 	return false
+}
+
+func findAdjacentNumbers(lines []string, row int, col int) []int {
+	adjacent := []int{}
+
+	for rowOffset := -1; rowOffset <= 1; rowOffset++ {
+		rowIdx := row + rowOffset
+
+		if rowIdx < 0 || rowIdx >= len(lines) || lines[rowIdx] == "" {
+			continue
+		}
+
+		colIdx := col - 1
+		for colIdx <= col+1 {
+			if colIdx < 0 || colIdx >= len(lines[rowIdx]) {
+				colIdx++
+				continue
+			}
+			if isDigit(lines[rowIdx][colIdx]) {
+				n, end := grabNumber(lines[rowIdx], colIdx)
+				adjacent = append(adjacent, n)
+				colIdx = end
+			}
+
+			colIdx++
+		}
+	}
+
+	return adjacent
+}
+
+func grabNumber(s string, i int) (int, int) {
+	start := i
+	for j := i - 1; j >= 0 && isDigit(s[j]); j-- {
+		start = j
+	}
+
+	width := countDigits(s[start:])
+	n, err := strconv.Atoi(s[start : start+width])
+	if err != nil {
+		log.Fatalf("grabbing number: %s", err)
+	}
+	return n, start + width
 }
