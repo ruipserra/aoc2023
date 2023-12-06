@@ -16,6 +16,7 @@ var input string
 
 func main() {
 	fmt.Printf("Part 1: %v\n", part1(input))
+	fmt.Printf("Part 2: %v\n", part2(input))
 }
 
 func part1(input string) int {
@@ -27,6 +28,37 @@ func part1(input string) int {
 	})
 
 	return score
+}
+
+func part2(input string) int {
+	cards := []card{}
+	eachLine(input, func(line string) {
+		cards = append(cards, parseCard(line))
+	})
+
+	// Let's say originals and copies are the same thing so we can count
+	// them all together.
+	copies := make([]int, len(cards))
+	for i := range copies {
+		copies[i] = 1
+	}
+
+	for i, card := range cards {
+		matches := countMatches(card)
+		for j := 0; j < matches; j++ {
+			idx := i + j + 1
+			if idx >= len(copies) {
+				break
+			}
+			copies[idx] += copies[i]
+		}
+	}
+
+	total := 0
+	for _, n := range copies {
+		total += n
+	}
+	return total
 }
 
 func eachLine(input string, fn func(line string)) {
@@ -70,15 +102,20 @@ func parseInts(input string) []int {
 }
 
 func calculateScore(card card) int {
-	found := 0
-	for _, n := range card.want {
-		if slices.Contains(card.have, n) {
-			found++
-		}
-	}
-	if found == 0 {
+	matches := countMatches(card)
+	if matches == 0 {
 		return 0
 	}
 	//nolint:gomnd // The score increases in powers of 2
-	return int(math.Pow(2, float64(found-1)))
+	return int(math.Pow(2, float64(matches-1)))
+}
+
+func countMatches(card card) int {
+	matches := 0
+	for _, n := range card.want {
+		if slices.Contains(card.have, n) {
+			matches++
+		}
+	}
+	return matches
 }

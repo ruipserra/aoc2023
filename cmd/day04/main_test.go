@@ -17,3 +17,12 @@ func TestPart1(t *testing.T) {
 		t.Errorf("part1() = %v, want %v", got, want)
 	}
 }
+
+func TestPart2(t *testing.T) {
+	want := 30
+	got := part2(testInput)
+
+	if got != want {
+		t.Errorf("part2() = %v, want %v", got, want)
+	}
+}
